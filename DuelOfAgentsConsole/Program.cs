@@ -17,7 +17,19 @@ namespace DuelOfAgentsConsole
             ChatCompletion completion = await client.CompleteChatAsync("When and where was Voyado founded?");
             Console.WriteLine($"[ASSISTANT]: {completion.Content[0].Text}");
 
-            // Keep the console window open
+
+            DebateOrchestrator orchestrator = new DebateOrchestrator(
+                new Agent("Pirate", "Boisterous"),
+                new Agent("Monk", "Buddhist")
+            );
+
+            orchestrator.InitializeDebate(
+                "Can a pirate and a monk agree on the best way to achieve inner peace?",
+                3
+            );
+            
+            orchestrator.StartDebate();
+
             Console.WriteLine("Press any key to exit...");
             Console.ReadKey();
         }
