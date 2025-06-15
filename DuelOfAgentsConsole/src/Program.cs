@@ -1,5 +1,6 @@
 ﻿using OpenAI.Chat;
 using Microsoft.Extensions.Configuration;
+using DuelOfAgentsConsole.Llm;
 
 namespace DuelOfAgentsConsole
 {
@@ -13,22 +14,30 @@ namespace DuelOfAgentsConsole
 
             Console.WriteLine("Duel of Agents Console Application");
 
+            
             ChatClient client = new(model: "gpt-4o-mini", apiKey: apiKey);
             ChatCompletion completion = await client.CompleteChatAsync("When and where was Voyado founded?");
             Console.WriteLine($"[ASSISTANT]: {completion.Content[0].Text}");
 
+            ChatService chatService = new ChatService(apiKey, "gpt-4o-mini");
+            Agent pirate = new Agent(chatService, "Pirate", "Boisterous");
+            Agent monk = new Agent(chatService, "Monk", "Buddhist");
 
-            DebateOrchestrator orchestrator = new DebateOrchestrator(
-                new Agent("Pirate", "Boisterous"),
-                new Agent("Monk", "Buddhist")
-            );
+            DebateOrchestrator orchestrator = new DebateOrchestrator(pirate, monk);
 
             orchestrator.InitializeDebate(
                 "Can a pirate and a monk agree on the best way to achieve inner peace?",
                 3
             );
             
-            orchestrator.StartDebate();
+            try 
+            {
+                await orchestrator.StartDebateAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred during the debate: {ex.Message}");
+            }
 
             Console.WriteLine("Press any key to exit...");
             Console.ReadKey();

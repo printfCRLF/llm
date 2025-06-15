@@ -27,16 +27,14 @@ class DebateOrchestrator
         
     }
 
-
-    public void StartDebate()
+    public async Task StartDebateAsync()
     {
         // First round
-        var argument1 = _agent1.Speak(_topic);
+        var argument1 = await _agent1.PresentArgumentAsync(_topic);
         _arguments.Add(argument1);
         Console.WriteLine($"Round 1: {_agent1.Name} argues: {argument1}");
 
-
-        var argument2 = _agent2.Speak(argument1);
+        var argument2 = await _agent2.PresentArgumentAsync(argument1);
         _arguments.Add(argument2);
         Console.WriteLine($"Round 1: {_agent2.Name} argues: {argument2}");
 
@@ -44,15 +42,15 @@ class DebateOrchestrator
         for (int i = 1; i < _numOfRounds; i++)
         {
             var lastArgument = _arguments.Last();
-            argument1 = _agent1.Speak(lastArgument);
+            argument1 = await _agent1.PresentArgumentAsync(lastArgument);
             Console.WriteLine($"Round {i + 1}: {_agent1.Name} argues: {argument1}");
             _arguments.Add(argument1);
-            argument2 = _agent2.Speak(argument1);
+            argument2 = await _agent2.PresentArgumentAsync(argument1);
             _arguments.Add(argument2);
             Console.WriteLine($"Round {i + 1}: {_agent2.Name} argues: {argument2}");
-
         }
 
         Console.WriteLine("Debate Ended");
     }
+
 }

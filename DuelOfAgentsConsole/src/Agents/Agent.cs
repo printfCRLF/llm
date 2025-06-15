@@ -1,19 +1,25 @@
+using DuelOfAgentsConsole.Llm;
+
 public class Agent
 {
     public string Name { get; set; }
-    public string Persona { get; set; }
+    protected string Persona { get; set; }
+    protected double Temperature { get; set; }
+    protected ChatService ChatService { get; set; }
 
-    public Agent(string name, string persona)
+    public Agent(ChatService chatService, string name, string persona, double temperature = 0.75)
     {
         Name = name;
         Persona = persona;
+        Temperature = temperature;
+        ChatService = chatService;
     }
 
-    public string Speak(string input)
+    public async Task<string> PresentArgumentAsync(string argument)
     {
-        string output = "my response to " + input + " as $asdf";
-        return output;
+        return await ChatService.GetResponseAsync(argument);
     }
+
 
     public override string ToString()
     {
