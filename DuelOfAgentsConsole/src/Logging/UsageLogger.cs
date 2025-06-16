@@ -3,7 +3,7 @@ namespace DuelOfAgentsConsole.Logging
 {
     public class UsageLogger
     {
-        private readonly List<int> _usageRecords = new();
+        private readonly List<int> _usageRecords = [];
 
         public void LogUsage(int tokenCount)
         {

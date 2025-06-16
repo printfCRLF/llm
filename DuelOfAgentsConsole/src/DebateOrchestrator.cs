@@ -3,25 +3,16 @@ using DuelOfAgentsConsole.Agents;
 using DuelOfAgentsConsole.Llm;
 using DuelOfAgentsConsole.Logging;
 
-class DebateOrchestrator
+class DebateOrchestrator(Agent agent1, Agent agent2, ConsoleLogger cLogger, UsageLogger usageLogger)
 {
-    private string _topic;
-    private int _numOfRounds;
-    private readonly Agent _agent1;
-    private readonly Agent _agent2;
-    private readonly ConsoleLogger _cLogger;
-    private readonly UsageLogger _usageLogger;
+    private string? _topic;
+    private int? _numOfRounds;
+    private readonly Agent _agent1 = agent1;
+    private readonly Agent _agent2 = agent2;
+    private readonly ConsoleLogger _cLogger = cLogger;
+    private readonly UsageLogger _usageLogger = usageLogger;
 
     private readonly ObservableCollection<CustomChatMessage> _conversation = [];
-
-    public DebateOrchestrator(Agent agent1, Agent agent2, ConsoleLogger cLogger, UsageLogger usageLogger)
-    {
-        _agent1 = agent1;
-        _agent2 = agent2;
-        _cLogger = cLogger;
-        _usageLogger = usageLogger;
-    }
-
 
     public void InitializeDebate(string topic, int numOfRounds)
     {
