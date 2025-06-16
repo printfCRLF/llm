@@ -1,5 +1,4 @@
 using DuelOfAgentsConsole.Llm;
-using OpenAI.Chat;
 
 namespace DuelOfAgentsConsole.Agents
 {
@@ -14,17 +13,5 @@ namespace DuelOfAgentsConsole.Agents
         {
         }
 
-        public override async Task<string> PresentArgumentAsync(string debateTopic, List<CustomChatMessage> conversation)
-        {
-            var messages = ConstructMessagesWithContext(debateTopic, conversation);
-            var options = new ChatCompletionOptions
-            {
-                MaxOutputTokenCount = 100, // You can adjust the max output tokens as needed
-                Temperature = Temperature
-            };
-
-            (string response, int tokenCount) = await ChatService.GetChatCompletionAsync(messages, options);
-            return response;
-        }
     }
 }

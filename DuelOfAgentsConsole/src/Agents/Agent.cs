@@ -10,6 +10,7 @@ namespace DuelOfAgentsConsole.Agents
         protected float Temperature { get; set; }
         protected ChatService ChatService { get; set; }
 
+
         public Agent(string name, string persona, float temperature, ChatService chatService)
         {
             Name = name;
@@ -17,17 +18,29 @@ namespace DuelOfAgentsConsole.Agents
             Temperature = temperature;
             ChatService = chatService;
         }
+        
 
-        public abstract Task<string> PresentArgumentAsync(string debateTopic, List<CustomChatMessage> conversation);
+        public virtual async Task<(string reply, int tokenCount)> PresentArgumentAsync(string debateTopic, ICollection<CustomChatMessage> conversation)
+        {
+            var messages = ConstructMessagesWithContext(debateTopic, conversation);
+            var options = new ChatCompletionOptions
+            {
+                MaxOutputTokenCount = 100,
+                Temperature = Temperature
+            };
 
-        protected List<CustomChatMessage> ConstructMessagesWithContext(string debateTopic, List<CustomChatMessage> conversation)
+            (string response, int tokenCount) = await ChatService.GetChatCompletionAsync(messages, options);
+            return (response, tokenCount);
+        }
+        
+        protected List<CustomChatMessage> ConstructMessagesWithContext(string debateTopic, ICollection<CustomChatMessage> conversation)
         {
             var messages = new List<CustomChatMessage>
             {
                 new CustomChatMessage("system", Persona),
-                new CustomChatMessage("user", $"Debate Topic: {debateTopic}. Please limit your arguments to 100 words."),
+                new CustomChatMessage("user", $"Debate Topic: {debateTopic}. Please limit your reply to 100 words."),
             };
-        
+
             // Add the current conversation history, ensuring roles are appropriate for context
             foreach (var msg in conversation)
             {
