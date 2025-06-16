@@ -16,5 +16,31 @@ namespace DuelOfAgentsConsole.Llm
             ChatCompletion completion = await _client.CompleteChatAsync(prompt);
             return completion.Content[0].Text;
         }
+
+        public async Task<(string Reply, int tokenCount)> GetChatCompletionAsync(List<CustomChatMessage> customMessages, ChatCompletionOptions options)
+        {
+            var messages = new List<ChatMessage>();
+            foreach (var cMsg in customMessages)
+            {
+                if (cMsg.Role == "system")
+                {
+                    messages.Add(new SystemChatMessage(cMsg.Content));
+                }
+                else if (cMsg.Role == "user")
+                {
+                    messages.Add(new UserChatMessage(cMsg.Content));
+                }
+                else if (cMsg.Role == "assistant")
+                {
+                    messages.Add(new AssistantChatMessage(cMsg.Content));
+                }
+            }
+
+            ChatCompletion completion = await _client.CompleteChatAsync(messages, options);
+            var reply = completion.Content[0].Text;
+            var tokenCount = completion.Usage.TotalTokenCount;
+
+            return (reply, tokenCount);
+        }
     }
 }
